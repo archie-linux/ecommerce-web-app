@@ -66,7 +66,7 @@ def login():
         if user and user.password == password:
             session['user_id'] = user.id
             flash('Login successful!', 'success')
-            return render_template('index.html', user=user.username)
+            return redirect('/products')
         else:
             return 'Invalid email or password'
 
@@ -97,6 +97,14 @@ def filter_products_by_category(category_id):
         filtered_products = Product.query.all()
 
     return render_template('products.html', products=filtered_products)
+
+
+@app.route('/search')
+@check_session_exists
+def search():
+    query = request.args.get('query')
+    products = Product.query.filter(Product.name.ilike(f"%{query}%")).all()
+    return render_template('products.html', products=products, query=query)
 
 
 @app.route('/add-to-cart', methods=['POST'])
@@ -179,7 +187,7 @@ def place_order():
     session.pop('cart', None)
 
     flash('Your order has been placed successfully!', 'success')
-    return render_template('index.html', user=name)
+    return redirect('/products')
 
 
 if __name__ == '__main__':

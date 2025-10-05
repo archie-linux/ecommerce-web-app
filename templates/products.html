@@ -4,35 +4,48 @@
 
 {% block content %}
 <div class="container">
+  <div>
+    <form action="{{ url_for('search') }}" method="GET">
+      <input type="text" class="search-input rounded" name="query" placeholder="Enter a product name" style="width: 500px; height: 38px;">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+  </div>
+  <br>
   <span style="margin-right: 20px;"><a href="{{ url_for('view_cart') }}" class="btn btn-primary">View Cart</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('browse_products' ) }}" class="btn btn-primary">All Categories</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='1' ) }}" class="btn btn-primary">Men's clothing</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='2') }}" class="btn btn-primary">Jewelery</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='3') }}" class="btn btn-primary">Electronics</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='4') }}" class="btn btn-primary">Women's Clothing</a></span>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1 class="text-center">Products</h1>
-            <hr>
-            {% for product in products %}
-            <div class="row">
-              <div class="col-md-6">
-                <img src="{{ product.image_url }}" alt="{{ product.name }}" width="200" height="200">
-                <h5>{{ product.name }}</h5>
-              </div>
-              <div class="col-md-6">
-                <p>Description: {{ product.description }}</p>
-                <p>Price: {{ product.price }}</p>
-                <form action="/add-to-cart" method="post">
-                  <input type="hidden" name="product_id" value="{{ product.id }}">
-                  <input type="number" name="quantity" value="1" min="1">
-                  <button class="btn btn-primary" type="submit">Add to Cart</button>
-                </form>
-              </div>
+  <div class="row justify-content-center">
+      <div class="col-md-8">
+          {% if query %}
+          <br>
+          <h2>Search Results for "{{ query }}"</h2>
+          <br>
+          {% endif %}
+          <h1 class="text-center">Products</h1>
+          <hr>
+          {% for product in products %}
+          <div class="row">
+            <div class="col-md-6">
+              <img src="{{ product.image_url }}" alt="{{ product.name }}" width="200" height="200">
+              <h5>{{ product.name }}</h5>
             </div>
-            <br>
-            {% endfor %}
-        </div>
+            <div class="col-md-6">
+              <p>Description: {{ product.description }}</p>
+              <p>Price: {{ product.price }}</p>
+              <form action="/add-to-cart" method="post">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input type="number" name="quantity" value="1" min="1">
+                <button class="btn btn-primary" type="submit">Add to Cart</button>
+              </form>
+            </div>
+          </div>
+          <br>
+          {% endfor %}
       </div>
     </div>
+  </div>
 </div>
 {% endblock %}
