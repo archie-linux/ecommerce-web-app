@@ -10,12 +10,10 @@ class TestData:
         self.password = password
         self.expected_url = expected_url
 
-
 @pytest.fixture()
 def test_data(request):
     test_data = TestData(request.param[0], request.param[1], request.param[2])
     return test_data
-
 
 @pytest.fixture(scope='session')
 def browser():
@@ -24,7 +22,6 @@ def browser():
     yield driver
 
     driver.quit()
-
 
 @pytest.mark.parametrize('test_data', [
     ['test5@test.xyz', 'test5', 'http://127.0.0.1:5000/products'],

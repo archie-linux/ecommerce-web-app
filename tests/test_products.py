@@ -2,13 +2,11 @@ from selenium.webdriver.common.by import By
 import requests
 import random
 
-
 def search_text(browser, search_text):
     search_input = browser.find_element(By.NAME, "query")
     search_button = browser.find_element(By.ID, "search")
     search_input.send_keys(search_text)
     search_button.click()
-
 
 def validate_products(browser, expected_products):
     page_source = browser.page_source
@@ -22,7 +20,6 @@ def validate_products(browser, expected_products):
         assert product['title'] in page_source.replace('&amp;', '&')
         assert product['description'] in page_source.replace('&amp;', '&')
         assert str(product['price']) in page_source
-
 
 def test_product_filter_by_categories(browser):
     categories = ["men's clothing", "jewelery", "electronics", "women's clothing"]
@@ -45,7 +42,6 @@ def test_valid_search(browser):
     # search product
     search_text(browser, product_name)
     validate_products(browser, expected_products)
-
 
 def test_invalid_search(browser):
     product_name = "shoes"
