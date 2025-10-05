@@ -4,6 +4,7 @@ from flask_bootstrap import Bootstrap
 from models import User, Product
 from forms import RegistrationForm, LoginForm
 from models import db
+from functools import wraps
 import os
 
 app = Flask(__name__)
@@ -16,6 +17,18 @@ db.init_app(app)
 migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 
+
+# Decorator function to check if session exists
+def check_session_exists(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('user_id'):
+            # Redirect to login page
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 @app.route("/")
 def index():
     if session.get('user_id'):
@@ -23,19 +36,6 @@ def index():
     else:
         return redirect('/login')
 
-@app.route("/products")
-def browse_products():
-    products = Product.query.all()
-    return render_template('products.html', products=products)
-
-@app.route('/products/<category_id>')
-def filter_products_by_category(category_id):
-    if category_id:
-        filtered_products = Product.query.filter_by(category_id=int(category_id)).all()
-    else:
-        filtered_products = Product.query.all()
-
-    return render_template('products.html', products=filtered_products)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -72,6 +72,7 @@ def login():
 
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 def logout():
     # Clear the session
@@ -79,7 +80,27 @@ def logout():
 
     return redirect(url_for('login'))
 
+
+@app.route("/products")
+@check_session_exists
+def browse_products():
+    products = Product.query.all()
+    return render_template('products.html', products=products)
+
+
+@app.route('/products/<category_id>')
+@check_session_exists
+def filter_products_by_category(category_id):
+    if category_id:
+        filtered_products = Product.query.filter_by(category_id=int(category_id)).all()
+    else:
+        filtered_products = Product.query.all()
+
+    return render_template('products.html', products=filtered_products)
+
+
 @app.route('/add-to-cart', methods=['POST'])
+@check_session_exists
 def add_to_cart():
     product_id = request.form.get('product_id')
     quantity = request.form.get('quantity')
@@ -104,7 +125,9 @@ def add_to_cart():
     else:
         return 'Product not found'
 
+
 @app.route('/update-cart', methods=['POST'])
+@check_session_exists
 def update_cart():
     cart_items = session.get('cart', {})
 
@@ -120,7 +143,9 @@ def update_cart():
     session['cart'] = cart_items
     return redirect(url_for('view_cart'))
 
+
 @app.route('/view-cart', methods=['GET'])
+@check_session_exists
 def view_cart():
     cart = session.get('cart', {})
     return render_template('cart.html', cart=cart)
@@ -134,12 +159,15 @@ def calculate_total_amount(cart):
     return total_amount
 
 @app.route('/checkout')
+@check_session_exists
 def checkout():
     cart = session.get('cart', {})
     total_amount = calculate_total_amount(cart)
     return render_template('checkout.html', cart=cart, total_amount=total_amount)
 
+
 @app.route('/place-order', methods=['POST'])
+@check_session_exists
 def place_order():
     name = request.form.get('name')
     address = request.form.get('address')
