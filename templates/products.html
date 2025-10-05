@@ -5,6 +5,13 @@
 </head>
 <body>
     <a href="{{ url_for('view_cart') }}">View Cart</a>
+    <br><br>
+    <span style="margin-right: 20px;"><a href="{{ url_for('browse_products') }}">All Categories</a></span>
+    <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='1') }}">Men's clothing</a></span>
+    <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='2') }}">Jewelery</a></span>
+    <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='3') }}">Electronics</a></span>
+    <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='4') }}">Women's Clothing</a></span>
+    <br><br>
     <h1>Product List</h1>
     <div>
       {% for product in products %}

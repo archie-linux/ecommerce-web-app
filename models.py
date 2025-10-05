@@ -16,8 +16,9 @@ class Product(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Float)
     image_url = db.Column(db.String(255))
-    category_id = db.Column(db.Integer)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id', name='fk_product_categories_id'))
 
+    categories = db.relationship('Categories', backref=db.backref('products'))
 
 class Categories(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,35 +1,41 @@
 ## Create virtualenv
+```
 python3 -m venv myvenv
 source myvenv/bin/activate
+```
 
-# Install Dependencies
-pip install -r requirements.txt
+## Install Dependencies
+```pip install -r requirements.txt```
 
-# Setup Database
+## Setup Database
+```
 export FLASK_APP=app
 flask shell
+```
 
-// Import Database object
-from app import db
+## Import Database object
 
-// Import models
-from model.user import User
+```from app import db```
 
-// Create tables
-db.create_all()
+## Import models
+```from model.user import User```
 
-// Verify User table got created
-User.query.all() // returns []
+## Create tables
+```db.create_all()```
 
-# Run App
+## Verify User table got created
+```User.query.all() // returns []```
+
+## Run App
+```
 python3 app.py
 
 To run in development mode - `flask run --reload`
+```
 
-App Url: http://127.0.0.1:5000
-
-# Setup DB Migration
-
+## Setup DB Migration
+```
 flask db init
 flask db migrate -m "Initial Migration"
 flask db upgrade
+```

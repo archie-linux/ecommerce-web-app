@@ -15,14 +15,8 @@ if len(Categories.query.all()) == 0:
 
 product_data = requests.get("https://fakestoreapi.com/products").json()
 
-categories_map = {
-    "men's clothing": 1,
-    "jewelery": 2,
-    "electronics": 3,
-    "women's clothing": 4
-}
 
 if len(Product.query.all()) == 0:
     for product in product_data:
-        db.session.add(Product(name=product['title'], description=product['description'], price=product['price'], image_url=product['image'], category_id=categories_map[product['category']]))
+        db.session.add(Product(name=product['title'], description=product['description'], price=product['price'], image_url=product['image'], category_id=categories.index(product['category']) + 1))
         db.session.commit()

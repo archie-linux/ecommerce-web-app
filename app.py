@@ -23,6 +23,15 @@ def browse_products():
     products = Product.query.all()
     return render_template('products.html', products=products)
 
+@app.route('/products/<category_id>')
+def filter_products_by_category(category_id):
+    if category_id:
+        filtered_products = Product.query.filter_by(category_id=int(category_id)).all()
+    else:
+        filtered_products = Product.query.all()
+
+    return render_template('products.html', products=filtered_products)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
