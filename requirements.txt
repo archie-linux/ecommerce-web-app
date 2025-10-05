@@ -1,4 +1,5 @@
 alembic==1.11.1
+bcrypt==4.0.1
 blinker==1.6.2
 certifi==2023.5.7
 charset-normalizer==3.1.0
@@ -7,6 +8,7 @@ dnspython==2.3.0
 dominate==2.8.0
 email-validator==2.0.0.post2
 Flask==2.3.2
+Flask-Bcrypt==1.0.1
 Flask-Bootstrap==3.3.7.1
 Flask-Migrate==4.0.4
 Flask-Script==2.0.6

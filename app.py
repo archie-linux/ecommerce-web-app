@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
+from flask_bcrypt import Bcrypt
 from models import User, Product
 from forms import RegistrationForm, LoginForm
 from models import db
@@ -15,8 +16,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
+bcrypt = Bcrypt(app)
 bootstrap = Bootstrap(app)
-
 
 # Decorator function to check if session exists
 def check_session_exists(f):
@@ -45,7 +46,9 @@ def register():
         email = form.email.data
         password = form.password.data
 
-        user = User(username=username, email=email, password=password)
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        user = User(username=username, email=email, password=hashed_password)
         db.session.add(user)
         db.session.commit()
 
@@ -63,7 +66,8 @@ def login():
         password = form.password.data
 
         user = User.query.filter_by(email=email).first()
-        if user and user.password == password:
+
+        if user and bcrypt.check_password_hash(user.password, password):
             session['user_id'] = user.id
             flash('Login successful!', 'success')
             return redirect('/products')
