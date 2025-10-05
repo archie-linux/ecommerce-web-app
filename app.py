@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, request, redirect, flash, session, url_for
 from flask_migrate import Migrate
 from models import User, Product
 from forms import RegistrationForm, LoginForm
@@ -57,6 +57,59 @@ def login():
             return 'Invalid email or password'
 
     return render_template('login.html', form=form)
+
+@app.route('/logout')
+def logout():
+    # Clear the session
+    session.clear()
+
+    return redirect('/login')
+
+@app.route('/add-to-cart', methods=['POST'])
+def add_to_cart():
+    product_id = request.form.get('product_id')
+    quantity = request.form.get('quantity')
+
+    # Retrieve the product from the database
+    product = Product.query.get(product_id)
+
+    # Check if the product exists
+    if product:
+        cart_item = {
+            'product_id': product_id,
+            'quantity': quantity,
+            'name': product.name,
+            'price': product.price
+        }
+
+        cart = session.get('cart', {})
+        cart[product_id] = cart_item
+        session['cart'] = cart
+        print(session['cart'])
+        return redirect('/dashboard')
+    else:
+        return 'Product not found'
+
+@app.route('/update-cart', methods=['POST'])
+def update_cart():
+    cart_items = session.get('cart', {})
+
+    product_id = request.form.get('product_id')
+    quantity = int(request.form.get('quantity'))
+    item = cart_items[product_id]
+
+    if quantity > 0:
+        item['quantity'] = str(quantity)
+    else:
+        cart_items.pop(product_id)
+
+    session['cart'] = cart_items
+    return redirect(url_for('view_cart'))
+
+@app.route('/view-cart', methods=['GET'])
+def view_cart():
+    cart = session.get('cart', {})
+    return render_template('cart.html', cart=cart)
 
 if __name__ == '__main__':
     app.run(port=5001)

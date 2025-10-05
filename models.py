@@ -15,6 +15,7 @@ class Product(db.Model):
     image_url = db.Column(db.String(255))
     category_id = db.Column(db.Integer)
 
+
 class Categories(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)

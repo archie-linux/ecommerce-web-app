@@ -1,0 +1,29 @@
+<!-- cart.html -->
+<a href="{{ url_for('dashboard') }}">Continue Shopping</a>
+<h1>Cart Items</h1>
+
+{% if cart %}
+  <table>
+    <tr>
+      <th>Product Name</th>
+      <th>Quantity</th>
+      <th>Price</th>
+    </tr>
+    {% for item_id, item in cart.items() %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price }}</td>
+        <td>
+        <form action="/update-cart" method="post">
+            <input type="hidden" name="product_id" value="{{ item_id }}">
+            <input type="number" name="quantity" value="{{ item.quantity }}">
+            <button type="submit">Update</button>
+        </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>Your cart is empty.</p>
+{% endif %}

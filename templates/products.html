@@ -4,13 +4,19 @@
   <title>Product List</title>
 </head>
 <body>
+    <a href="{{ url_for('view_cart') }}">View Cart</a>
     <h1>Product List</h1>
     <div>
       {% for product in products %}
         <p><strong>{{ product.name }}</strong></p>
-        <img src={{ product.image_url }} width="200" height="200">
-        <p>Product Description: {{ product.description }}</p>
-        <p>Product Price: {{ product.price }}</p>
+        <img src="{{ product.image_url }}" width="200" height="200">
+        <p><strong>Product Description:</strong> "{{ product.description }}"</p>
+        <p><strong>Product Price:</strong> {{ product.price }}</p>
+        <form action="/add-to-cart" method="post">
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="number" name="quantity" value="1" min="1">
+            <button type="submit">Add to Cart</button>
+        </form>
       {% endfor %}
     </div>
   </body>
