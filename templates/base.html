@@ -8,10 +8,14 @@
     crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">Ecommerce</a>
+            <a class="navbar-brand" href="/profile">Profile</a>
+            <a class="navbar-brand" href="/products">Products</a>
+            {% if session['user_id'] %}
             <button onclick="window.location.href = '/logout'; " class="btn btn-primary" type="submit">Logout</button>
+            {% endif %}
         </div>
     </nav>
     <br>

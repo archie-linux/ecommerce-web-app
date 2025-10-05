@@ -2,22 +2,32 @@ from flask import Flask, render_template, request, redirect, flash, session, url
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_bcrypt import Bcrypt
+from flask_mail import Mail, Message
 from models import User, Product
 from forms import RegistrationForm, LoginForm
 from models import db
 from functools import wraps
+import pyotp
 import os
+import base64
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__)) + '/'
-app.config['SECRET_KEY'] = 'secret'  # Replace with your secret key
+app.config['SECRET_KEY'] = 'secret'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' +  basedir + 'users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER'] = '<your-mail-server>'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'your-email-address'
+app.config['MAIL_PASSWORD'] = '<your-password>'
+
 
 db.init_app(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 bootstrap = Bootstrap(app)
+mail = Mail(app)
 
 # Decorator function to check if session exists
 def check_session_exists(f):
@@ -38,6 +48,22 @@ def index():
         return redirect('/login')
 
 
+def generate_otp():
+    random_bytes = os.urandom(10)
+    secret_key = base64.b32encode(random_bytes).decode('utf-8')
+    otp = pyotp.TOTP(secret_key)
+    return otp.now()
+
+
+def send_otp_via_emai(otp, recepient):
+    msg = Message('One-Time Password', sender='<sender-email-address>', recipients=[recepient])
+    msg.body = f'Your OTP is: {otp}'
+
+    mail.send(msg)
+
+    return 'OTP sent successfully.'
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -47,15 +73,34 @@ def register():
         password = form.password.data
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-
-        user = User(username=username, email=email, password=hashed_password)
+        otp = generate_otp()
+        user = User(username=username, email=email, password=hashed_password, otp=otp)
         db.session.add(user)
         db.session.commit()
 
-        flash('Registration successful! You can now log in.', 'success')
-        return redirect(url_for('login'))
+        # send_otp_via_emai(otp, user.email)
+
+        return redirect(url_for('verify_email'))
 
     return render_template('register.html', form=form)
+
+
+@app.route('/verify-email', methods=['GET', 'POST'])
+def verify_email():
+    if request.method == 'POST':
+        email = request.form['email']
+        otp = request.form['otp']
+
+        user = User.query.filter_by(email=email).first()
+        if otp == user.otp:
+            user.email_confirmed = True
+            db.session.commit()
+
+            return render_template('email_confirmed.html')
+
+        return "Invalid OTP"  # OTP does not match
+
+    return render_template('verify_email.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -69,7 +114,6 @@ def login():
 
         if user and bcrypt.check_password_hash(user.password, password):
             session['user_id'] = user.id
-            flash('Login successful!', 'success')
             return redirect('/products')
         else:
             return 'Invalid email or password'
@@ -83,6 +127,13 @@ def logout():
     session.clear()
 
     return redirect(url_for('login'))
+
+
+@app.route('/profile')
+@check_session_exists
+def user_profile():
+    user = User.query.get(int(session.get('user_id')))
+    return render_template('user_profile.html', user=user)
 
 
 @app.route("/products")
@@ -162,6 +213,7 @@ def view_cart():
     cart = session.get('cart', {})
     return render_template('cart.html', cart=cart)
 
+
 def calculate_total_amount(cart):
     total_amount = 0
     for _, item in cart.items():
@@ -170,13 +222,13 @@ def calculate_total_amount(cart):
 
     return total_amount
 
+
 @app.route('/checkout')
 @check_session_exists
 def checkout():
     cart = session.get('cart', {})
     total_amount = calculate_total_amount(cart)
     return render_template('checkout.html', cart=cart, total_amount=total_amount)
-
 
 @app.route('/place-order', methods=['POST'])
 @check_session_exists
@@ -185,13 +237,10 @@ def place_order():
     address = request.form.get('address')
     payment = request.form.get('payment')
 
-    # Save the order details to the database, send confirmation email, etc.
-
     # Clear the cart after the order is placed
     session.pop('cart', None)
 
-    flash('Your order has been placed successfully!', 'success')
-    return redirect('/products')
+    return render_template('order_confirmed.html')
 
 
 if __name__ == '__main__':

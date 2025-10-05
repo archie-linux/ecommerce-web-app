@@ -8,7 +8,8 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-
+    otp = db.Column(db.String(10))
+    email_confirmed = db.Column(db.Boolean(), default=False)
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)

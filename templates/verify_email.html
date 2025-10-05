@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify Email{% endblock %}
+
+{% block content %}
+<h4>Enter OTP</h4>
+<form method="POST" action="/verify-email">
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required>
+  <br>
+  <label for="otp">OTP:</label>
+  <input type="text" id="otp" name="otp" required>
+  <br>
+  <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock %}
