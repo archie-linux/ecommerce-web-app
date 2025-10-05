@@ -23,7 +23,7 @@
           <form action="/update-cart" method="post">
               <input type="hidden" name="product_id" value="{{ item_id }}">
               <input type="number" name="quantity" value="{{ item.quantity }}">
-              <button class="btn btn-primary" type="submit">Update</button>
+              <button class="btn btn-primary" id="update_cart" type="submit">Update</button>
           </form>
           </td>
         </tr>
@@ -32,8 +32,8 @@
   {% else %}
     <p>Your cart is empty.</p>
   {% endif %}
-  <a class="mr-2" href="{{ url_for('browse_products') }}">Continue Shopping</a>
-  <a class="mr-2" href="{{ url_for('checkout') }}">Proceed to checkout</a>
+  <a class="mr-2" id="continue_shopping" href="{{ url_for('browse_products') }}">Continue Shopping</a>
+  <a class="mr-2" id="checkout" href="{{ url_for('checkout') }}">Proceed to checkout</a>
 </div>
 {% endblock %}
 

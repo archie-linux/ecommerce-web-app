@@ -11,8 +11,8 @@
     </form>
   </div>
   <br>
-  <span style="margin-right: 20px;"><a href="{{ url_for('view_cart') }}" class="btn btn-primary">View Cart</a></span>
-  <span style="margin-right: 20px;"><a href="{{ url_for('browse_products' ) }}" class="btn btn-primary">All Categories</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('view_cart') }}" name="view_cart" class="btn btn-primary">View Cart</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('browse_products' ) }}" id="all_categories" class="btn btn-primary">All Categories</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='1' ) }}" name="men's clothing" class="btn btn-primary">Men's clothing</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='2') }}" name="jewelery" class="btn btn-primary">Jewelery</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='3') }}" name="electronics" class="btn btn-primary">Electronics</a></span>
@@ -30,22 +30,22 @@
             <h4>Product not found</h4>
           {% endif %}
           {% for product in products %}
-          <div class="row">
-            <div class="col-md-6">
-              <img src="{{ product.image_url }}" alt="{{ product.name }}" width="200" height="200">
-              <h5>{{ product.name }}</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" width="200" height="200">
+                <h5>{{ product.name }}</h5>
+              </div>
+              <div class="col-md-6">
+                <p>Description: {{ product.description }}</p>
+                <p>Price: {{ product.price }}</p>
+                <form action="/add-to-cart" method="post">
+                  <input type="hidden" name="product_id" value="{{ product.id }}">
+                  <input type="number" name="quantity" value="1" min="1">
+                  <button class="btn btn-primary" id="add_cart_{{ product.id }}" type="submit">Add to Cart</button>
+                </form>
+              </div>
             </div>
-            <div class="col-md-6">
-              <p>Description: {{ product.description }}</p>
-              <p>Price: {{ product.price }}</p>
-              <form action="/add-to-cart" method="post">
-                <input type="hidden" name="product_id" value="{{ product.id }}">
-                <input type="number" name="quantity" value="1" min="1">
-                <button class="btn btn-primary" type="submit">Add to Cart</button>
-              </form>
-            </div>
-          </div>
-          <br>
+            <br>
           {% endfor %}
       </div>
     </div>

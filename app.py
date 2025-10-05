@@ -193,7 +193,7 @@ def add_to_cart():
         cart = session.get('cart', {})
         cart[product_id] = cart_item
         session['cart'] = cart
-        print(session['cart'])
+        print(f"Cart Items: {session['cart']}")
         return redirect(url_for('browse_products'))
     else:
         return 'Product not found'
