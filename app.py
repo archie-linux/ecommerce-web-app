@@ -16,10 +16,10 @@ migrate = Migrate(app, db)
 
 @app.route("/")
 def index():
-    return redirect('/register')
+    return redirect('register')
 
-@app.route("/dashboard")
-def dashboard():
+@app.route("/products")
+def browse_products():
     products = Product.query.all()
     return render_template('products.html', products=products)
 
@@ -36,7 +36,7 @@ def register():
         db.session.commit()
 
         flash('Registration successful! You can now log in.', 'success')
-        return redirect('/login')
+        return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
 
@@ -52,7 +52,7 @@ def login():
         if user and user.password == password:
             session['user_id'] = user.id
             flash('Login successful!', 'success')
-            return redirect('/dashboard')
+            return render_template('index.html', user=user.username)
         else:
             return 'Invalid email or password'
 
@@ -63,7 +63,7 @@ def logout():
     # Clear the session
     session.clear()
 
-    return redirect('/login')
+    return redirect(url_for('login'))
 
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
@@ -86,7 +86,7 @@ def add_to_cart():
         cart[product_id] = cart_item
         session['cart'] = cart
         print(session['cart'])
-        return redirect('/dashboard')
+        return redirect(url_for('browse_products'))
     else:
         return 'Product not found'
 
@@ -111,5 +111,34 @@ def view_cart():
     cart = session.get('cart', {})
     return render_template('cart.html', cart=cart)
 
+def calculate_total_amount(cart):
+    total_amount = 0
+    for _, item in cart.items():
+        print(item)
+        total_amount += item['price'] * int(item['quantity'])
+
+    return total_amount
+
+@app.route('/checkout')
+def checkout():
+    cart = session.get('cart', {})
+    total_amount = calculate_total_amount(cart)
+    return render_template('checkout.html', cart=cart, total_amount=total_amount)
+
+@app.route('/place-order', methods=['POST'])
+def place_order():
+    name = request.form.get('name')
+    address = request.form.get('address')
+    payment = request.form.get('payment')
+
+    # Save the order details to the database, send confirmation email, etc.
+
+    # Clear the cart after the order is placed
+    session.pop('cart', None)
+
+    flash('Your order has been placed successfully!', 'success')
+    return render_template('index.html', user=name)
+
+
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(port=5000)

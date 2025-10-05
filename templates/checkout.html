@@ -1,0 +1,35 @@
+<!-- Display cart items and checkout form -->
+<h1>Checkout</h1>
+
+<table>
+  <tr>
+    <th>Product Name</th>
+    <th>Quantity</th>
+    <th>Price</th>
+  </tr>
+  {% for item_id, item in cart.items() %}
+    <tr>
+      <td>{{ item.name }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.price }}</td>
+    </tr>
+  {% endfor %}
+  <tr>
+    <td colspan="2"><strong>Total Amount:</strong></td>
+    <td><strong>{{ total_amount }}</strong></td>
+  </tr>
+</table>
+
+<h2>Shipping Information</h2>
+<form action="/place-order" method="post">
+  <label for="name">Name:</label>
+  <input type="text" name="name" id="name">
+
+  <label for="address">Address:</label>
+  <input type="text" name="address" id="address">
+
+  <label for="payment">Payment Method:</label>
+  <input type="text" name="payment" id="payment">
+
+  <button type="submit">Place Order</button>
+</form>

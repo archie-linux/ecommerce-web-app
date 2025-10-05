@@ -1,5 +1,5 @@
 <!-- cart.html -->
-<a href="{{ url_for('dashboard') }}">Continue Shopping</a>
+<a href="{{ url_for('browse_products') }}">Continue Shopping</a>
 <h1>Cart Items</h1>
 
 {% if cart %}
@@ -27,3 +27,4 @@
 {% else %}
   <p>Your cart is empty.</p>
 {% endif %}
+<a href="{{ url_for('checkout') }}">Proceed to checkout</a>
