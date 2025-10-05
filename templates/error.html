@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div class="container">
+    <p><strong>Error: </strong> {{ error_message }}</p>
+    <h5>
+    {% if not session['user_id'] and error_message != 'User not found' %}
+        <a class="btn btn-primary" href="{{ url_for('verify_email') }}">Verify Email</a>
+    {% endif %}
+    </h5>
+</div>
+{% endblock %}

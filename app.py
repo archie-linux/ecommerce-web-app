@@ -40,6 +40,11 @@ def check_session_exists(f):
     return decorated_function
 
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html', error_message="Page not found"), 404
+
+
 @app.route("/")
 def index():
     if session.get('user_id'):
@@ -98,7 +103,7 @@ def verify_email():
 
             return render_template('email_confirmed.html')
 
-        return "Invalid OTP"  # OTP does not match
+        return render_template('error.html', error_message='Invalid OTP')  # OTP does not match
 
     return render_template('verify_email.html')
 
@@ -112,12 +117,17 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
+        if not user:
+            return render_template('error.html', error_message='User not found')
+
+        if not user.email_confirmed:
+            return render_template('error.html', error_message='Please verify your email!')
+
         if user and bcrypt.check_password_hash(user.password, password):
             session['user_id'] = user.id
             return redirect('/products')
         else:
-            return 'Invalid email or password'
-
+            return render_template('error.html', error_message='Invalid email or password')
     return render_template('login.html', form=form)
 
 
@@ -220,7 +230,7 @@ def calculate_total_amount(cart):
         print(item)
         total_amount += item['price'] * int(item['quantity'])
 
-    return total_amount
+    return round(total_amount, 2)
 
 
 @app.route('/checkout')
