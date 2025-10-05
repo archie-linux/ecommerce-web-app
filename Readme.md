@@ -1,41 +1,83 @@
 ## Create virtualenv
-```
-python3 -m venv myvenv
-source myvenv/bin/activate
-```
+
+- python3 -m venv myvenv
+- source myvenv/bin/activate
 
 ## Install Dependencies
-```pip3 install -r requirements.txt```
+
+- pip3 install -r requirements.txt
 
 ## Setup Database
-```
-export FLASK_APP=app
-flask shell
 
-// Import Database object
+- export FLASK_APP=app
 
-from app import db
+- flask shell
 
-// Import models
-from model.user import User
+- from app import db
 
-// Create tables
-db.create_all()
+- from models import User
 
-// Verify User table got created
-User.query.all() // returns []
-```
+- db.create_all()
+
+- User.query.all() // returns []```
 
 ## Run App
-```
-python3 app.py
 
-To run in development mode: flask run --reload
-```
+- python3 app.py
 
-## Setup DB Migration
-```
-flask db init
-flask db migrate -m "Initial Migration"
-flask db upgrade
-```
+## Run Selenium Tests:
+
+- pytest -v
+
+## To run in development mode:
+
+- flask run --reload
+
+## On user registration, run the following commands to get the otp
+
+- flask shell
+
+- from models import User
+
+- User.query.all()[-1].otp
+
+
+## Web App Screenshots
+
+
+# Login
+
+<img src="./screenshots/login.png" alt="drawing" width="400"/>
+
+# Register
+
+<img src="./screenshots/register.png" alt="drawing" width="400"/>
+
+# Enter OTP
+
+<img src="./screenshots/enter_otp.png" alt="drawing" width="400"/>
+
+
+# Email Confirmed
+
+<img src="./screenshots/email_confirmed.png" alt="drawing" width="400"/>
+
+# Products Dashboard
+
+<img src="./screenshots/all_products.png" alt="drawing" width="400"/>
+
+# Filter Products View By Categories
+
+<img src="./screenshots/filter_view_by_categories.png" alt="drawing" width="400"/>
+
+# Search Products
+
+<img src="./screenshots/search_products.png" alt="drawing" width="400"/>
+
+# View Cart Items
+
+<img src="./screenshots/view_cart.png" alt="drawing" width="400"/>
+
+# Checkout
+
+<img src="./screenshots/checkout.png" alt="drawing" width="400"/>
