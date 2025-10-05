@@ -13,4 +13,8 @@ class Product(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Float)
     image_url = db.Column(db.String(255))
-    stock_quantity = db.Column(db.Integer)
+    category_id = db.Column(db.Integer)
+
+class Categories(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
