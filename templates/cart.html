@@ -22,8 +22,8 @@
           <td>
           <form action="/update-cart" method="post">
               <input type="hidden" name="product_id" value="{{ item_id }}">
-              <input type="number" name="quantity" value="{{ item.quantity }}">
-              <button class="btn btn-primary" id="update_cart" type="submit">Update</button>
+              <input type="number" name="quantity_{{ item_id }}" value="{{ item.quantity }}">
+              <button class="btn btn-primary" name="update_cart_{{ item_id }}" type="submit">Update</button>
           </form>
           </td>
         </tr>

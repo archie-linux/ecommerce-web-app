@@ -176,7 +176,7 @@ def search():
 @check_session_exists
 def add_to_cart():
     product_id = request.form.get('product_id')
-    quantity = request.form.get('quantity')
+    quantity = request.form.get(f"quantity_{product_id}")
 
     # Retrieve the product from the database
     product = Product.query.get(product_id)
@@ -203,9 +203,8 @@ def add_to_cart():
 @check_session_exists
 def update_cart():
     cart_items = session.get('cart', {})
-
     product_id = request.form.get('product_id')
-    quantity = int(request.form.get('quantity'))
+    quantity = int(request.form.get(f"quantity_{product_id}"))
     item = cart_items[product_id]
 
     if quantity > 0:
@@ -227,7 +226,6 @@ def view_cart():
 def calculate_total_amount(cart):
     total_amount = 0
     for _, item in cart.items():
-        print(item)
         total_amount += item['price'] * int(item['quantity'])
 
     return round(total_amount, 2)
