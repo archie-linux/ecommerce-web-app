@@ -7,16 +7,16 @@
   <div>
     <form action="{{ url_for('search') }}" method="GET">
       <input type="text" class="search-input rounded" name="query" placeholder="Enter a product name" style="width: 500px; height: 38px;">
-      <button class="btn btn-primary" type="submit">Search</button>
+      <button class="btn btn-primary" id="search" type="submit">Search</button>
     </form>
   </div>
   <br>
   <span style="margin-right: 20px;"><a href="{{ url_for('view_cart') }}" class="btn btn-primary">View Cart</a></span>
   <span style="margin-right: 20px;"><a href="{{ url_for('browse_products' ) }}" class="btn btn-primary">All Categories</a></span>
-  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='1' ) }}" class="btn btn-primary">Men's clothing</a></span>
-  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='2') }}" class="btn btn-primary">Jewelery</a></span>
-  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='3') }}" class="btn btn-primary">Electronics</a></span>
-  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='4') }}" class="btn btn-primary">Women's Clothing</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='1' ) }}" name="men's clothing" class="btn btn-primary">Men's clothing</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='2') }}" name="jewelery" class="btn btn-primary">Jewelery</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='3') }}" name="electronics" class="btn btn-primary">Electronics</a></span>
+  <span style="margin-right: 20px;"><a href="{{ url_for('filter_products_by_category', category_id='4') }}" name="women's clothing" class="btn btn-primary">Women's Clothing</a></span>
   <div class="row justify-content-center">
       <div class="col-md-8">
           {% if query %}
@@ -26,6 +26,9 @@
           {% endif %}
           <h1 class="text-center">Products</h1>
           <hr>
+          {% if not products %}
+            <h4>Product not found</h4>
+          {% endif %}
           {% for product in products %}
           <div class="row">
             <div class="col-md-6">
