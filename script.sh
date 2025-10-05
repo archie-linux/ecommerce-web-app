@@ -3,7 +3,7 @@
 sudo apt update
 sudo apt install google-chrome-stable
 
-version=$(echo google-chrome --version)
+version=$(google-chrome --version)
 
 # install dependencies
 sudo apt install -y unzip xvfb libxi6 libgconf-2-4
