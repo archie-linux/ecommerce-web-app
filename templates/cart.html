@@ -1,30 +1,39 @@
 <!-- cart.html -->
-<a href="{{ url_for('browse_products') }}">Continue Shopping</a>
-<h1>Cart Items</h1>
 
-{% if cart %}
-  <table>
-    <tr>
-      <th>Product Name</th>
-      <th>Quantity</th>
-      <th>Price</th>
-    </tr>
-    {% for item_id, item in cart.items() %}
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h5>Cart Items</h5>
+  {% if cart %}
+    <table>
       <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.price }}</td>
-        <td>
-        <form action="/update-cart" method="post">
-            <input type="hidden" name="product_id" value="{{ item_id }}">
-            <input type="number" name="quantity" value="{{ item.quantity }}">
-            <button type="submit">Update</button>
-        </form>
-        </td>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
       </tr>
-    {% endfor %}
-  </table>
-{% else %}
-  <p>Your cart is empty.</p>
-{% endif %}
-<a href="{{ url_for('checkout') }}">Proceed to checkout</a>
+      {% for item_id, item in cart.items() %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price }}</td>
+          <td>
+          <form action="/update-cart" method="post">
+              <input type="hidden" name="product_id" value="{{ item_id }}">
+              <input type="number" name="quantity" value="{{ item.quantity }}">
+              <button class="btn btn-primary" type="submit">Update</button>
+          </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>Your cart is empty.</p>
+  {% endif %}
+  <a class="mr-2" href="{{ url_for('browse_products') }}">Continue Shopping</a>
+  <a class="mr-2" href="{{ url_for('checkout') }}">Proceed to checkout</a>
+</div>
+{% endblock %}
+

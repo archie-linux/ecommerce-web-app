@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 from flask_migrate import Migrate
+from flask_bootstrap import Bootstrap
 from models import User, Product
 from forms import RegistrationForm, LoginForm
 from models import db
@@ -13,10 +14,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
+bootstrap = Bootstrap(app)
 
 @app.route("/")
 def index():
-    return redirect('register')
+    if session.get('user_id'):
+        return redirect('/products')
+    else:
+        return redirect('/login')
 
 @app.route("/products")
 def browse_products():
